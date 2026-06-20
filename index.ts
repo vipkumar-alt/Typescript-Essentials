@@ -1,10 +1,12 @@
 export {};
 
+// Typed callback signatures used by Observer handlers.
 type NextHandler<T> = (value: T) => void;
 type ErrorHandler = (error: unknown) => void;
 type CompleteHandler = () => void;
 type TeardownLogic = () => void;
 
+// Each observer callback is optional, but when provided it must match the Observable value type.
 interface ObserverHandlers<T> {
   next?: NextHandler<T>;
   error?: ErrorHandler;
@@ -44,6 +46,7 @@ class Observer<T> {
 }
 
 class Observable<T> {
+  // The subscribe function receives a typed Observer and returns cleanup logic.
   constructor(private _subscribe: (observer: Observer<T>) => TeardownLogic) {}
 
   static from<T>(values: T[]): Observable<T> {
@@ -75,6 +78,7 @@ const HTTP_GET_METHOD = 'GET' as const;
 const HTTP_STATUS_OK = 200 as const;
 const HTTP_STATUS_INTERNAL_SERVER_ERROR = 500 as const;
 
+// Literal union types restrict requests and responses to supported values only.
 type HttpMethod = typeof HTTP_POST_METHOD | typeof HTTP_GET_METHOD;
 type HttpStatus = typeof HTTP_STATUS_OK | typeof HTTP_STATUS_INTERNAL_SERVER_ERROR;
 
@@ -102,6 +106,7 @@ interface GetRequest extends BaseRequest {
   method: typeof HTTP_GET_METHOD;
 }
 
+// Named HttpRequest/HttpResponse to avoid conflicts with built-in DOM Request/Response types.
 type HttpRequest = PostRequest<User> | GetRequest;
 
 interface HttpResponse {
@@ -144,6 +149,7 @@ const handleError = (error: unknown): HttpResponse => {
 
 const handleComplete = (): void => console.log('complete');
 
+// The Observable is explicitly typed to emit HttpRequest objects.
 const requests$ = Observable.from<HttpRequest>(requestsMock);
 
 const subscription = requests$.subscribe({
