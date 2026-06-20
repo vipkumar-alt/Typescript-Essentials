@@ -84,7 +84,7 @@ const userMock = {
     'admin'
   ],
   createdAt: new Date(),
-  isDeleated: false,
+  isDeleted: false,
 };
 
 const requestsMock = [
